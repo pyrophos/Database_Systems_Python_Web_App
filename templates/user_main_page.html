@@ -26,12 +26,22 @@ padding-top: 1px;
     padding: 6px 6px 6px 6px;
 }
 #search_bar{
-   display: inline;
+    display: inline;
     float: right;
     overflow: hidden;
     padding-right: 30px;
 }
 
+h3 {
+    padding-top: 50px;
+    font-size: 30px;
+    text-decoration: underline;
+}
+
+h4 {
+    font-size: 30px;
+    text-decoration: underline;
+}
 
 
    </style>
@@ -40,11 +50,17 @@ padding-top: 1px;
 <body>
 <div>
     <h1>Welcome back, (insert user_id) !</h1>
-    </div>
+</div>
    <form id="search_bar" action="/search">
+        <select name="mydropdown">
+            <option value="Book">Book</option>
+            <option value="Author">Author</option>
+            <option value="Keywords">Keywords</option>
+        </select>
 
           <input type="text" width="70" placeholder="Search" name="q" size="40">
           <input type="submit" value="Go" >
+
     </form>
 
         <div id="menu">
@@ -55,5 +71,27 @@ padding-top: 1px;
         </ul>
        </div>
 
+  <div id="main_content_container">
+    <div id="left_pane" >
+        <h3>Top Reads</h3>
+        <ul>
+           <!-- {% for article in articles %}
+                 <li><a href="/articles/{{ article.id }}">{{ article.title }}</a></li>
+            {% endfor %} -->
+             <li><a href="">Fill with books that are top rated for month</a></li>
+         </ul>
+    </div>
+
+      <div id="right_pane">
+        <h4>Friend Activity</h4>
+          <ul>
+   <!-- {% for article in articles %}
+        <li><a href="/articles/{{ article.id }}">{{ article.title }}</a></li>
+    {% endfor %} -->
+        <li><a href="">Fill with user friend activity</a></li>
+</ul>
+    </div>
+
+  </div>
 </body>
 </html>

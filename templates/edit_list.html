@@ -73,14 +73,18 @@ padding-top: 1px;
        </div>
     <div>
         <div id= "add_list" >
-            <form action="/lists/add_list">
-                 <input type="submit" id = "add_list1" value="Add List" align="left">
+            <form action="/lists/delete_list/{{l_id}}">
+                 <input type="submit" id = "add_list1" value="Delete List" align="left">
             </form>
         </div>
         <ul>
-            {% for l in list %}
-             <li><a href="/lists/{{l.list_id}}">{{l.list_title}}</a></li>
-             {% endfor %}
+            {% if not list_books   %}
+                <p> No books in list</p>
+            {% else %}
+                {% for l in list_books %}
+                    <li><a href="http://www.w3schools.com">{{l.title}}</a></li>
+                {% endfor %}
+             {% endif %}
          </ul>
 
             {% if prevPage %}
