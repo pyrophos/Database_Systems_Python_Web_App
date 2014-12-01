@@ -1,6 +1,6 @@
 from os import abort
 
-__author__ = 'aponcy'
+__author__ = 'RR1'
 
 from flask import Flask, render_template, redirect, url_for, request, session, flash, escape
 from data import queries
@@ -114,6 +114,21 @@ def delete_list(list_id):
         user_lists.delete_list(cur, list_id)
 
     return redirect('/lists')
+
+
+@app.route('/search')
+def get_search_results():
+    if 'q' in request.args:
+        query = request.args['q']
+    else:
+        abort(400)
+
+    with easypg.cursor() as cur:
+        results = queries.search(cur, query)
+    return render_template('search_results.html',
+                           query=query,
+                           articles=results)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

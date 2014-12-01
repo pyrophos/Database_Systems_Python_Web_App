@@ -4,14 +4,14 @@
 
 body {
     font-family: "Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
-    color: #888;
+    color: #000000;
     font-style: normal;
     font-size: 14px;
     line-height: 22px;
 }
 
 a {
-    color: #003399;
+    color: #000000;
     background-color: transparent;
     font-weight: normal;
 }
@@ -24,9 +24,26 @@ a {
 }
 
 h1 {
-    color: #fff;
+    color: #000000;
     margin: 0;
-    font-size: 18px;
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 50px;
+    text-transform: capitalize;
+}
+
+h3 {
+    color: #000000;
+    padding-top: 40px;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 50px;
+    text-transform: capitalize;
+}
+
+h4 {
+    color: #000000;
+    font-size: 16px;
     font-weight: 400;
     line-height: 50px;
     text-transform: capitalize;
@@ -45,4 +62,31 @@ code {
 #content {
     padding: 20px;
     zoom: 1;
+}
+
+
+#menu ul {
+    height: auto;
+    padding: 4px 0px;
+    margin: 0px;
+}
+
+#menu li {
+    display: inline;
+    padding: 20px;
+    font-size: 25px;
+    padding-top: 1px;
+}
+
+#menu a {
+    text-decoration: none;
+    color: #000000;
+    padding: 6px 6px 6px 6px;
+}
+
+#search_bar{
+    display: inline;
+    float: right;
+    overflow: hidden;
+    padding-right: 30px;
 }

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <link href="/static/style.css" rel="stylesheet" media="screen">
+    <meta charset="UTF-8">
+    <title>Welcome, {{ session['username'] }}</title>
+</head>
+<body>
+<h1>Search Results</h1>
+
+<form action="/search">
+    <input type="text" width="50" placeholder="Search" name="q"
+           value="{{ query }}">
+    <input type="submit" value="Go">
+</form>
+
+<ul>
+    {% for book in books %}
+        <li><a href="/books/{{ book.id }}">{{ book.title }}</a></li>
+    {% endfor %}
+</ul>
+</body>
+</html>

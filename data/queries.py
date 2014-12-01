@@ -1,6 +1,6 @@
 from flask import Response
 
-__author__ = 'aponcy'
+__author__ = 'RR1'
 
 import bcrypt
 import easypg
@@ -55,6 +55,83 @@ def add_user(cur, username, password, email):
         COMMIT;
     ''', (username, encrypt_password(password), email))
     return None
+
+
+def search_books(cur, query):
+    """
+    Search for articles matching a query.
+    :param cur: the database cursor
+    :return: a list of dictionaries of article IDs and titles
+    """
+
+    cur.execute('''
+        SELECT title_id, title
+        FROM titles JOIN titles_title_idx USING (title_id)
+        WHERE article_terms @@ plainto_tsquery(%s)
+        ORDER BY ts_rank(article_terms, plainto_tsquery(%s)) DESC, title
+    ''', (query, query))
+
+    article_info = []
+    for id, title in cur:
+        article_info.append({'id': id, 'title': title})
+    return article_info
+
+def search_author(cur, query):
+    """
+    Search for articles matching a query.
+    :param cur: the database cursor
+    :return: a list of dictionaries of article IDs and titles
+    """
+
+    cur.execute('''
+        SELECT article_id, title
+        FROM article JOIN article_search USING (article_id)
+        WHERE article_terms @@ plainto_tsquery(%s)
+        ORDER BY ts_rank(article_terms, plainto_tsquery(%s)) DESC, title
+    ''', (query, query))
+
+    article_info = []
+    for id, title in cur:
+        article_info.append({'id': id, 'title': title})
+    return article_info
+
+def search_user(cur, query):
+    """
+    Search for articles matching a query.
+    :param cur: the database cursor
+    :return: a list of dictionaries of article IDs and titles
+    """
+
+    cur.execute('''
+        SELECT article_id, title
+        FROM article JOIN article_search USING (article_id)
+        WHERE article_terms @@ plainto_tsquery(%s)
+        ORDER BY ts_rank(article_terms, plainto_tsquery(%s)) DESC, title
+    ''', (query, query))
+
+    article_info = []
+    for id, title in cur:
+        article_info.append({'id': id, 'title': title})
+    return article_info
+
+def search_category(cur, query):
+    """
+    Search for articles matching a query.
+    :param cur: the database cursor
+    :return: a list of dictionaries of article IDs and titles
+    """
+
+    cur.execute('''
+        SELECT article_id, title
+        FROM article JOIN article_search USING (article_id)
+        WHERE article_terms @@ plainto_tsquery(%s)
+        ORDER BY ts_rank(article_terms, plainto_tsquery(%s)) DESC, title
+    ''', (query, query))
+
+    article_info = []
+    for id, title in cur:
+        article_info.append({'id': id, 'title': title})
+    return article_info
 
 def get_all_user_list(cur, page, user_id):
     """

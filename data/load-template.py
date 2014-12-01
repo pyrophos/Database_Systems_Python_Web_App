@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+__author__ = 'RR1'
+
 import json
 import easypg
 

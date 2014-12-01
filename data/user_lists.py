@@ -1,4 +1,4 @@
-__author__ = 'Michael'
+__author__ = 'RR1'
 
 
 def get_all_user_list(cur, user_id):
