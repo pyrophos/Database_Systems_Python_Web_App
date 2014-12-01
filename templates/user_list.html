@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+   <style>
+ body{
+
+ }
+
+ #menu ul {
+    height: auto;
+    padding: 4px 0px;
+    margin: 0px;
+}
+ #menu li {
+display: inline;
+padding: 20px;
+ font-size: 40px;
+}
+
+ #menu a {
+    text-decoration: none;
+    color: #00F;
+    padding: 8px 8px 8px 8px;
+}
+   </style>
+    <title>(User) Lists </title>
+</head>
+<body>
+    <div id="menu">
+     <ul>
+        <li aria-set size="10"><a href="index.html">Home</a></li>
+        <li><a href="aboutus.html">Friends</a></li>
+        <li><a href="services.html">My Lists</a></li>
+     </ul>
+    </div>
+
+    <ul>
+    {% for list in articles %}
+        <li><a href="/articles/{{ article.id }}">{{ article.title }}</a></li>
+    {% endfor %}
+    </ul>
+
+            {% if prevPage %}
+    <a href="/articles/?page={{ prevPage }}">Previous</a>
+            {% endif %}
+    <a href="/articles/?page={{ nextPage }}">Next</a>
+</body>
+</html>

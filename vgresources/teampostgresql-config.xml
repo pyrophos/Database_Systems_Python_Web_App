@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<adminuser></adminuser>
+	<adminuserpassword></adminuserpassword>
+
+	<!-- The type of access anonymous users have (no login required) -->
+	<anonymousaccess>40</anonymousaccess>
+
+	<!-- If anonymous access is set to 'selected profile', this specifies the 
+		database id of the profile employed -->
+	<anonymousprofile></anonymousprofile>
+
+	<!-- If empty, the home directory of the user running the server is used -->
+	<datadirectory></datadirectory>
+
+	<!-- { DISABLED | SELFSIGNED } -->
+	<https>DISABLED</https>
+
+    <defaultdatabase>
+    	<host>127.0.0.1</host>
+    	<port>5432</port>
+    	<username>postgres</username>
+    	<password>cs4332</password>
+    	<databasename>scratch</databasename>
+    	<ssl>false</ssl>
+    </defaultdatabase>
+</config>

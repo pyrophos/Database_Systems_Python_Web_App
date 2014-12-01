@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <link href="/static/style.css" rel="stylesheet" media="screen">
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<div id="container">
+<div>Login</div>
+<form action="{{ url_for('login') }}" method="post">
+<input type="text" placeholder="Username" name="username" size="30" value="{{request.form.username }}"><br>
+<input type="password" placeholder="Password" name="password" size="30" value="{{request.form.password }}"><br>
+<input type="submit" value="Login">
+</form>
+</div>
+</body>
+</html>

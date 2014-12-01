@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+   <style>
+ body{
+
+ }
+
+ #menu ul {
+    height: auto;
+    padding: 4px 0px;
+    margin: 0px;
+}
+ #menu li {
+display: inline;
+padding: 20px;
+font-size: 25px;
+padding-top: 1px;
+}
+
+ #menu a {
+    text-decoration: none;
+    color: #00F;
+    padding: 6px 6px 6px 6px;
+}
+#search_bar{
+   display: inline;
+    float: right;
+    overflow: hidden;
+    padding-right: 30px;
+}
+
+
+
+   </style>
+    <title>Welcome, user </title>
+</head>
+<body>
+<div>
+    <h1>Welcome back, (insert user_id) !</h1>
+    </div>
+   <form id="search_bar" action="/search">
+
+          <input type="text" width="70" placeholder="Search" name="q" size="40">
+          <input type="submit" value="Go" >
+    </form>
+
+        <div id="menu">
+         <ul>
+              <li aria-setsize="10"><a href="/">Home</a></li>
+              <li><a href="aboutus.html">Friends</a></li>
+              <li><a href="/lists">My Lists</a></li>
+        </ul>
+       </div>
+
+</body>
+</html>
