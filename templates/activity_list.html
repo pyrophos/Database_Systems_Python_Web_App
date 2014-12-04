@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Followers</title>
+</head>
+<body>
+    <div>
+        {% if uid == session['username'] %}
+            <h1> Your friends' activity:</h1>
+        {% else %}
+            <h1>{{ uid }}'s friends' activity:</h1>
+        {% endif %}
+    </div>
+    {% for item in activity_info %}
+        {% if item.category == 'REVIEW' %}
+            <ul><a href="/users/{{ item.friend}}">{{ item.friend }}</a> reviewed <a href="/reviews/{{ item.friend}}/{{item.generic_field_1}}">{{ item.object }}</a></ul>
+        {% elif item.category == 'REVIEW_LIKE' %}
+            <ul><a href="/users/{{ item.friend }}">{{ item.friend }}</a> liked <a href="/users/{{item.other_person}}">{{ item.other_person }}'s</a> review of <a href="/reviews/ {{item.other_person}}/{{item.generic_field_1}}">{{ item.object }}</a></ul>
+        {% elif item.category == 'FOLLOW' %}
+            <ul><a href="/users/{{ item.friend }}">{{ item.friend }}</a> followed <a href="/users/{{item.other_person}}">{{item.other_person}}</a></ul>
+        {% elif item.category == 'LIST' %}
+           <ul><a href="/users/{{ item.friend }}">{{ item.friend }}</a> created the list {{ item.object }}</ul>
+        {% elif item.category == 'LIST_LIKE' %}
+            <ul><a href="/users/{{ item.friend }}">{{ item.friend }}</a> liked <a href="/users/{{ item.other_person}}">{{ item.other_person}}'s</a> list {{ item.object }}</ul>
+        {% elif item.category == 'LOG' %}
+            <ul><a href="/users/{{ item.friend }}">{{ item.friend }}</a> logged {{ item.object }}</ul>
+        {% elif item.category == 'RATING' %}
+            <ul><a href="/users/{{ item.friend }}">{{ item.friend }}</a> rated {{ item.other_person}} {{ item.object }} stars</ul>
+        {% endif %}
+    {% endfor %}
+</body>
+</html>
