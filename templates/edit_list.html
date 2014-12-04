@@ -7,7 +7,7 @@
 </head>
 <body>
 <div>
-    <h1>(insert user_id) Lists</h1>
+    <h1>{{uid}}'s Lists</h1>
 </div>
    <form id="search_bar" action="/search">
         <select name="mydropdown">
@@ -25,12 +25,12 @@
          <ul>
               <li aria-setsize="10"><a href="/">Home</a></li>
               <li><a href="aboutus.html">Friends</a></li>
-              <li><a href="/lists">My Lists</a></li>
+              <li><a href="/users/{{uid}}/lists">My Lists</a></li>
         </ul>
        </div>
     <div>
         <div id= "add_list" >
-            <form action="/lists/delete_list/{{l_id}}">
+            <form action="/users/{{uid}}/lists/delete_list/{{l_id}}">
                  <input type="submit" id = "add_list1" value="Delete List" align="left">
             </form>
         </div>

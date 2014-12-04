@@ -3,54 +3,12 @@
 
 <head lang="en">
     <meta charset="UTF-8">
-   <style>
- body{
-
- }
-
- #menu ul {
-    height: auto;
-    padding: 4px 0px;
-    margin: 0px;
-}
- #menu li {
-display: inline;
-padding: 20px;
-font-size: 25px;
-padding-top: 1px;
-}
-
- #menu a {
-    text-decoration: none;
-    color: #00F;
-    padding: 6px 6px 6px 6px;
-}
-#search_bar{
-    display: inline;
-    float: right;
-    overflow: hidden;
-    padding-right: 30px;
-}
-
-#h2{
-    font-size: 20px;
-}
-
-#add_list{
-    float:right;
-    padding-right: 30px;
-}
-#add_list1{
-     width: 10em;  height: 3em;
-
-}
-
-   </style>
+    <link href="/static/style.css" rel="stylesheet" media="screen">
     <title>User List Page</title>
 </head>
 <body>
 <div>
-    <h1>(insert user_id) Lists</h1>
+    <h1>{{uid}}'s Lists</h1>
 </div>
    <form id="search_bar" action="/search">
         <select name="mydropdown">
@@ -68,25 +26,20 @@ padding-top: 1px;
          <ul>
               <li aria-setsize="10"><a href="/">Home</a></li>
               <li><a href="aboutus.html">Friends</a></li>
-              <li><a href="/lists">My Lists</a></li>
+              <li><a href="/users/{{uid}}/lists">My Lists</a></li>
         </ul>
        </div>
     <div>
         <div id= "add_list" >
-            <form action="/lists/add_list">
+            <form action="/users/{{uid}}/lists/add_list">
                  <input type="submit" id = "add_list1" value="Add List" align="left">
             </form>
         </div>
         <ul>
             {% for l in list %}
-             <li><a href="/lists/{{l.list_id}}">{{l.list_title}}</a></li>
+             <li><a href="/users/{{uid}}/lists/{{l.list_id}}">{{l.list_title}}</a></li>
              {% endfor %}
          </ul>
-
-            {% if prevPage %}
-                 <a href="/articles/?page={{ prevPage }}">Previous</a>
-            {% endif %}
-                 <a href="/articles/?page={{ nextPage }}">Next</a>
     </div>
 </body>
 </html>

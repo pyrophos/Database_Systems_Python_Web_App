@@ -4,9 +4,8 @@ __author__ = 'RR1'
 
 from flask import Flask, render_template, redirect, url_for, request, session, flash, escape
 from data import queries, follows, reviews
-from data import queries
 from flask import render_template
-from data import user_lists
+from data import user_lists, activity
 import os
 import easypg
 
@@ -82,19 +81,20 @@ def home():
 
 
 
-@app.route('/lists')
-def get_series_list():
+@app.route('/users/<uid>/lists')
+def get_series_list(uid):
     with easypg.cursor() as cur:
-        u_list = user_lists.get_all_user_list(cur,1 )
-        return render_template('user_list.html', list = u_list)
+        id = session['user_id']
+        u_list = user_lists.get_all_user_list(cur, id )
+    return render_template('user_list.html', uid=uid, list = u_list)
 
-@app.route('/lists/add_list')
-def get_add_list():
-    return render_template('add_list_page.html')
+@app.route('/users/<uid>/lists/add_list')
+def get_add_list(uid):
+    return render_template('add_list_page.html', uid=uid)
 
 
-@app.route('/lists/add_list/add', methods=['POST', 'GET'])
-def add_list():
+@app.route('/users/<uid>/lists/add', methods=['POST', 'GET'])
+def add_list(uid):
     title = request.form['title']
     text = request.form['description']
     is_public = request.form['public']
@@ -104,29 +104,32 @@ def add_list():
     print is_public
     app.logger.info('list details  %s: %s', title, text )
     with easypg.cursor() as cur:
-        user_lists.add_list(cur, 1, title, text, is_public)
+        id = session['user_id']
+        user_lists.add_list(cur, id, title, text, is_public)
     # redirect user back to article which will display comments
     # always redirect after a POST
-    return redirect('/lists')
+    return redirect('/users/' + uid + '/lists')
 
-@app.route('/lists/<list_id>', methods=['POST', 'GET'])
-def edit_list(list_id):
-    with easypg.cursor() as cur:
-        list_books = user_lists.get_books_in_list(cur, 3)
+@app.route('/users/<uid>/lists/<list_id>', methods=['POST', 'GET'])
+def edit_list(uid, list_id):
+    if request.method == "GET":
+        with easypg.cursor() as cur:
+            list_books = user_lists.get_books_in_list(cur, list_id)
 
-    #if list_books is None:
-      #  abort(404)
+        #if list_books is None:
+          #  abort(404)
 
-    return render_template('edit_list.html',
-                                 l_id=list_id,
-                                 list_books = list_books)
+        return render_template('edit_list.html',
+                                    uid=uid,
+                                     l_id=list_id,
+                                     list_books = list_books)
 
-@app.route('/lists/delete_list/<list_id>', methods=['POST', 'GET'])
-def delete_list(list_id):
+@app.route('/users/<uid>/lists/delete_list/<list_id>', methods=['POST', 'GET'])
+def delete_list(list_id, uid):
     with easypg.cursor() as cur:
         user_lists.delete_list(cur, list_id)
 
-    return redirect('/lists')
+    return redirect('/users/' + uid + '/lists')
 
 
 @app.route('/search')
@@ -170,14 +173,15 @@ def print_followers(uid):
     if page <= 0:
         abort(404)
 
+    id = session['username']
     with easypg.cursor() as cur:
-        followers = follows.get_followers(cur, page, uid)
-        total_pages = follows.get_follower_pg_cnt(cur, uid)
+        followers = follows.get_followers(cur, page, id)
+        total_pages = follows.get_follower_pg_cnt(cur, id)
         return render_template('followers.html',
                                      follow = followers,
                                      page = page,
                                      total_pages = total_pages,
-                                     user = uid
+                                     user = id
                                      )
     if page > 1:
         prevPage = page - 1
@@ -240,7 +244,8 @@ def user_page(uid):
 @app.route('/users/<uid>/follow', methods=['POST'])
 def follow_user(uid):
     with easypg.cursor() as cur:
-        user_to_follow = queries.get_user_id(cur, uid)
+        username = session['username']
+        user_to_follow = queries.get_user_id(cur, username)
         follows.follow_user(cur, session['user_id'], user_to_follow)
     return redirect('/users/' + uid)
 
@@ -317,6 +322,15 @@ def authors_search_results(id):
         details = queries.get_author_books(cur, id)
 
     return render_template('author_details.html', details=details)
+
+@app.route('/users/<uid>/friend_activity')
+def get_frnd_actvty(uid):
+    with easypg.cursor() as cur:
+        user_id = queries.get_user_id(cur, uid)
+        activity_info = activity.get_friend_activity(cur, user_id)
+    return render_template('activity_list.html',
+                           activity_info = activity_info,
+                           uid = uid)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

@@ -30,7 +30,7 @@
             <li><a href="/follows/{{session['username']}}">Following</a></li>
             <li><a href="/users/{{session['username']}}/reviews">Reviews</a></li>
             <li><a href="/users/{{uid}}/friend_activity">Friend Activity</a></li>
-            <li><a href="/lists">My Lists</a></li>
+            <li><a href="/users/{{uid}}/lists">My Lists</a></li>
         </ul>
       {% else %}
             {% if following == 0 %}
