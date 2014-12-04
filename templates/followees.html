@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <link href="/static/style.css" rel="stylesheet" media="screen">
+    <meta charset="UTF-8">
+    <title>Follows</title>
+</head>
+<body>
+    <div>
+        <h1> People that {{uid}} follows:</h1>
+    {% if uid == session['username'] %}
+        {% for item in follow %}
+          <form action="/follows/{{uid}}/delete" method="POST">
+          <li><a href="/users/{{ item.follows }}">{{ item.follows }}</a> <input type="submit" value="Unfollow"><input type="hidden" name = "unfollow=" value="{{item.follows}}"></li>
+          </form>
+        {% endfor %}
+    {% else %}
+        {% for item in follow %}
+        <li><a href="/users/{{ item.follows }}">{{ item.follows }}</a></li>
+        {% endfor %}
+    {% endif %}
+
+    {% if prevPage %}
+        <a href="/articles/?page={{ prevPage }}">Previous</a>
+    {% endif %}
+        Page {{page}} of {{total_pages}}
+    {% if nextPage %}
+        <a href="/articles/?page={{ nextPage }}">Next</a>
+    {% endif %}
+    </div>
+</body>
+</html>

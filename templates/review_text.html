@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <link href="/static/style.css" rel="stylesheet" media="screen">
+    <meta charset="UTF-8">
+    <title>Review</title>
+</head>
+<body>
+    <div>
+        <h1> {{uid}}'s review of {{ title }} by
+             {% for author in author_list %}
+                {% if loop.last %}
+                    and {{ author }}
+                {% else %}
+                    {{ author }},
+                {% endif %}
+             {% endfor %}
+        </h1>
+        <h2> Review written {{creation_date}}</h2>
+        {% if uid == session['username'] %}
+            <form id="delete" action="/reviews/{{uid}}/{{review_id}}/delete" method="POST">
+            <input type="submit" value="Delete"><input type="hidden" name = "delete=" value="{{review_id}}"></li>
+            </form>
+            {{ review_text }}
+        {% else %}
+            {% if num_likes == 0 %}
+            <form id="like" action="/reviews/{{uid}}/{{review_id}}/like" method="POST">
+                <input type="submit" value="Like"><input type="hidden" name = "like" value="{{review_id}}">
+            </form>
+            {% else %}
+                <form id="unlike" action="/reviews/{{uid}}/{{review_id}}/unlike" method="POST">
+                    <input type="submit" value="Unlike"><input type="hidden" name="unlike" value="{{review_id}}">
+                </form>
+            {% endif %}
+            {{ review_text }}
+        {% endif %}
+
+
+    </div>
+</body>
+</html>

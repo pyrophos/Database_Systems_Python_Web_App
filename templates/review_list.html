@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <link href="/static/style.css" rel="stylesheet" media="screen">
+    <meta charset="UTF-8">
+    <title>Followers</title>
+</head>
+<body>
+    <div>
+        {% if uid == session['username'] %}
+            <h1> Your reviews:</h1>
+        {% else %}
+            <h1>Reviews by {{ uid }}</h1>
+        {% endif %}
+    </div>
+    {% for item in review_list %}
+    <li><a href="/reviews/{{ uid }}/{{item.review_id}}">{{ item.title }}</a> Reviewed on {{item.creation_date}}. {{item.num_likes}} likes.</li>
+   {% endfor %}
+
+{% if prevPage %}
+    <a href="/articles/?page={{ prevPage }}">Previous</a>
+{% endif %}
+    Page {{page}} of {{num_pages}}
+{% if nextPage %}
+    <a href="/articles/?page={{ nextPage }}">Next</a>
+{% endif %}
+</body>
+</html>
