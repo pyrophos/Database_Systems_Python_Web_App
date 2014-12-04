@@ -132,20 +132,28 @@ def get_search_results():
     else:
         abort(400)
 
+    books = None
+    authors = None
+    categories = None
+    users = None
 
     with easypg.cursor() as cur:
         if type == "Book":
-            results = queries.search_books_title(cur, query)
+            books = queries.search_titles(cur, query)
         if type == "Author":
-            results = queries.search_books_author(cur, query)
+            authors = queries.search_authors(cur, query)
         if type == "Categories":
-            results = queries.search_books_category(cur, query)
+            categories = queries.search_categories(cur, query)
         if type == "User":
-            results = queries.search_books_user(cur, query)
+            users = queries.search_users(cur, query)
+
 
     return render_template('search_results.html',
                            query=query,
-                           books=results)
+                           books=books,
+                           users=users,
+                           authors=authors,
+                           categories=categories)
 
 
 if __name__ == '__main__':

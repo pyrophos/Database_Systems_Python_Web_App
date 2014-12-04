@@ -20,9 +20,29 @@
        <input type="submit" value="Go" >
     </form>
 <ul>
-    {% for book in books %}
-        <li><a href="/books/{{ book.id }}">{{ book.title }}</a></li>
-    {% endfor %}
+    {% if books != None %}
+        {% for book in books %}
+            <li><a href="/books/{{ book.id }}">{{ book.title }}</a></li>
+        {% endfor %}
+    {% endif %}
+
+    {% if users != None %}
+        {% for user in users %}
+            <li><a href="/users/{{ user.id }}">{{ user.username }}</a></li>
+        {% endfor %}
+    {% endif %}
+
+    {% if authors != None %}
+        {% for author in authors %}
+            <li><a href="/author/{{ author.id }}">{{ author.author_name }}</a></li>
+        {% endfor %}
+    {% endif %}
+
+    {% if categories != None %}
+        {% for cat in categories %}
+            <li><a href="/category/{{ cat.id }}">{{ cat.cat_description }}</a></li>
+        {% endfor %}
+    {% endif %}
 </ul>
 </body>
 </html>

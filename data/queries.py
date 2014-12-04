@@ -1,4 +1,4 @@
-from flask import Response
+from flask import request
 
 __author__ = 'RR1'
 
@@ -71,10 +71,10 @@ def get_all_user_list(cur, page, user_id):
     user_list = []
     for list_title in cur:
          user_list.append({'lists_tile': list_title })
-    return  user_list
+    return user_list
 
 
-def search_books_title(cur, query):
+def search_titles(cur, query):
     cur.execute('''
         SELECT title_id, title
         FROM titles
@@ -82,26 +82,53 @@ def search_books_title(cur, query):
         ORDER BY title DESC, title
     ''', (query, ))
 
-    article_info = []
+    result = []
     for title_id, title in cur:
-        article_info.append({'id': title_id, 'title': title})
+        result.append({'id': title_id, 'title': title})
 
-    return article_info
+    return result
 
 
-def search_books_author(cur, query):
+def search_authors(cur, query):
     cur.execute('''
-        SELECT titles.title_id, titles.title
-        FROM titles
-        JOIN editions ON (editions.title_id = titles.title_id)
-        JOIN editions_authors ON (editions_authors.edition_id = editions.edition_id)
-        JOIN authors ON (authors.author_id = editions_authors.author_id)
+        SELECT author_id, author_name
+        FROM authors
         WHERE author_name @@ plainto_tsquery(%s)
-        ORDER BY titles.title DESC, titles.title
+        ORDER BY author_name DESC, author_name
     ''', (query, ))
 
-    article_info = []
-    for title_id, title in cur:
-        article_info.append({'id': title_id, 'title': title})
+    result = []
+    for author_id, author_name in cur:
+        result.append({'id': author_id, 'author_name': author_name})
 
-    return article_info
+    return result
+
+
+def search_categories(cur, query):
+    cur.execute('''
+        SELECT category_id, cat_description
+        FROM categories
+        WHERE cat_description @@ plainto_tsquery(%s)
+        ORDER BY cat_description DESC, cat_description
+    ''', (query, ))
+
+    result = []
+    for category_id, cat_description in cur:
+        result.append({'id': category_id, 'cat_description': cat_description})
+
+    return result
+
+
+def search_users(cur, query):
+    cur.execute('''
+        SELECT user_id, username
+        FROM users
+        WHERE username @@ plainto_tsquery(%s)
+        ORDER BY username DESC, username
+    ''', (query, ))
+
+    result = []
+    for user_id, username in cur:
+        result.append({'id': user_id, 'username': username})
+
+    return result
