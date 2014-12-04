@@ -3,6 +3,7 @@ from os import abort
 __author__ = 'RR1'
 
 from flask import Flask, render_template, redirect, url_for, request, session, flash, escape
+from data import queries, follows, reviews
 from data import queries
 from flask import render_template
 from data import user_lists
@@ -22,7 +23,12 @@ def login():
     if request.method == 'POST':
         if queries.compare_unpw(request.form['username'], request.form['password']):
             session['username'] = request.form['username']
-            return render_template('user_main_page.html')
+            u_name = session['username']
+            with easypg.cursor() as cur:
+                session['user_id'] = queries.get_user_id(cur, u_name)
+            return render_template('user_main_page.html',
+                                   uid = u_name
+                                  )
         else:
             error = 'Invalid Credentials. Please try again.'
             return render_template('login.html', error=error)
@@ -155,6 +161,158 @@ def get_search_results():
                            authors=authors,
                            categories=categories)
 
+@app.route('/followers/<uid>')
+def print_followers(uid):
+    if 'page' in request.args:
+        page = int(request.args['page'])
+    else:
+        page = 1
+    if page <= 0:
+        abort(404)
+
+    with easypg.cursor() as cur:
+        followers = follows.get_followers(cur, page, uid)
+        total_pages = follows.get_follower_pg_cnt(cur, uid)
+        return render_template('followers.html',
+                                     follow = followers,
+                                     page = page,
+                                     total_pages = total_pages,
+                                     user = uid
+                                     )
+    if page > 1:
+        prevPage = page - 1
+    else:
+        prevPage = None
+    if page < total_pages:
+        nextPage = page + 1
+    else:
+        nextPage = None
+
+@app.route('/follows/<user_id>', methods=['GET'])
+def print_followees(user_id):
+    if request.method == "GET":
+        if 'page' in request.args:
+            page = int(request.args['page'])
+        else:
+            page = 1
+        if page <= 0:
+            abort(404)
+
+        with easypg.cursor() as cur:
+            followees = follows.get_followees(cur, page, user_id)
+            total_pages = follows.get_followee_pg_cnt(cur, user_id)
+            return render_template('followees.html',
+                                         follow = followees,
+                                         page = page,
+                                         total_pages = total_pages,
+                                         uid = user_id
+                                        )
+
+        if page > 1:
+            prevPage = page - 1
+        else:
+            prevPage = None
+        if page < total_pages:
+            nextPage = page + 1
+        else:
+            nextPage = None
+
+@app.route('/follows/<user_id>/delete', methods=['POST'])
+def unfollow_from_frinds_list(user_id):
+    f = request.form
+    for key in f.keys():
+        remove_follower = f.getlist(key)[0]
+    if request.method == "POST":
+        with easypg.cursor() as cur:
+            #remove_follower = request.form['unfollow']
+            follows.unfollow(cur, session['username'], remove_follower)
+        return redirect('/follows/' + user_id)
+
+@app.route('/users/<uid>')
+def user_page(uid):
+    with easypg.cursor() as cur:
+        following = follows.get_follow_status(cur, session['username'], uid)
+    return render_template('user_main_page.html',
+                                 uid = uid,
+                                 following = following
+                                )
+
+@app.route('/users/<uid>/follow', methods=['POST'])
+def follow_user(uid):
+    with easypg.cursor() as cur:
+        user_to_follow = queries.get_user_id(cur, uid)
+        follows.follow_user(cur, session['user_id'], user_to_follow)
+    return redirect('/users/' + uid)
+
+@app.route('/users/<uid>/unfollow', methods=['POST'])
+def unfollow_from_user_page(uid):
+    f = request.form
+    for key in f.keys():
+        remove_follower = f.getlist(key)[0]
+    with easypg.cursor() as cur:
+        follows.unfollow(cur, session['username'], remove_follower)
+    return redirect('/users/' + uid)
+
+@app.route('/users/<uid>/reviews')
+def get_review_list(uid):
+    if 'page' in request.args:
+        page = int(request.args['page'])
+    else:
+        page = 1
+    if page <= 0:
+        abort(404)
+
+    with easypg.cursor() as cur:
+        review_list = reviews.get_reviews_list(cur, uid)
+        num_pages   = reviews.get_reviews_pg_cnt(cur, uid)
+    return render_template('review_list.html',
+                                 review_list = review_list,
+                                 page = page,
+                                 num_pages = num_pages,
+                                 uid = uid)
+
+@app.route('/reviews/<uid>/<rid>')
+def get_review(uid, rid):
+    with easypg.cursor() as cur:
+        review_info = reviews.get_user_review(cur, rid)
+        author_list = reviews.get_author_names(cur, rid)
+        num_likes   = reviews.get_likes(cur, rid, session['user_id'])
+    return render_template('review_text.html',
+                                 uid = uid,
+                                 author_list = author_list,
+                                 num_likes = num_likes,
+                                 **review_info
+                                 )
+
+@app.route('/reviews/<uid>/<rid>/delete', methods=['POST'])
+def dlt_review(uid, rid):
+    with easypg.cursor() as cur:
+        f = request.form
+        for key in f.keys():
+            remove_review = f.getlist(key)[0]
+        reviews.delete_review(cur, remove_review)
+    return redirect('/users/' + uid + '/reviews')
+
+@app.route('/reviews/<uid>/<review_id>/like', methods=['POST'])
+def lk_review(uid, review_id):
+    with easypg.cursor() as cur:
+        f = request.form
+        for key in f.keys():
+            like_review = f.getlist(key)[0]
+        reviews.like_review(cur, review_id, session['user_id'])
+    return redirect('/reviews/' + uid + '/' + review_id)
+
+@app.route('/reviews/<uid>/<review_id>/unlike', methods=['POST'])
+def unlk_review(uid, review_id):
+    with easypg.cursor() as cur:
+        f = request.form
+        for key in f.keys():
+            unlike_review = f.getlist(key)[0]
+        reviews.unlike_review(cur, review_id, session['user_id'])
+    return redirect('/reviews/' + uid + '/' + review_id)
+
+@app.route('/authors/<id>', methods=['POST', 'GET'])
+def
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
