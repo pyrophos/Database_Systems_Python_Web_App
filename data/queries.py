@@ -35,7 +35,6 @@ def compare_unpw(username, pw_challenge):
                 return False
 
 
-
 def encrypt_password(password):
     return bcrypt.hashpw(password, bcrypt.gensalt())
 
@@ -57,82 +56,6 @@ def add_user(cur, username, password, email):
     return None
 
 
-def search_books(cur, query):
-    """
-    Search for articles matching a query.
-    :param cur: the database cursor
-    :return: a list of dictionaries of article IDs and titles
-    """
-
-    cur.execute('''
-        SELECT title_id, title
-        FROM titles JOIN titles_title_idx USING (title_id)
-        WHERE article_terms @@ plainto_tsquery(%s)
-        ORDER BY ts_rank(article_terms, plainto_tsquery(%s)) DESC, title
-    ''', (query, query))
-
-    article_info = []
-    for id, title in cur:
-        article_info.append({'id': id, 'title': title})
-    return article_info
-
-def search_author(cur, query):
-    """
-    Search for articles matching a query.
-    :param cur: the database cursor
-    :return: a list of dictionaries of article IDs and titles
-    """
-
-    cur.execute('''
-        SELECT article_id, title
-        FROM article JOIN article_search USING (article_id)
-        WHERE article_terms @@ plainto_tsquery(%s)
-        ORDER BY ts_rank(article_terms, plainto_tsquery(%s)) DESC, title
-    ''', (query, query))
-
-    article_info = []
-    for id, title in cur:
-        article_info.append({'id': id, 'title': title})
-    return article_info
-
-def search_user(cur, query):
-    """
-    Search for articles matching a query.
-    :param cur: the database cursor
-    :return: a list of dictionaries of article IDs and titles
-    """
-
-    cur.execute('''
-        SELECT article_id, title
-        FROM article JOIN article_search USING (article_id)
-        WHERE article_terms @@ plainto_tsquery(%s)
-        ORDER BY ts_rank(article_terms, plainto_tsquery(%s)) DESC, title
-    ''', (query, query))
-
-    article_info = []
-    for id, title in cur:
-        article_info.append({'id': id, 'title': title})
-    return article_info
-
-def search_category(cur, query):
-    """
-    Search for articles matching a query.
-    :param cur: the database cursor
-    :return: a list of dictionaries of article IDs and titles
-    """
-
-    cur.execute('''
-        SELECT article_id, title
-        FROM article JOIN article_search USING (article_id)
-        WHERE article_terms @@ plainto_tsquery(%s)
-        ORDER BY ts_rank(article_terms, plainto_tsquery(%s)) DESC, title
-    ''', (query, query))
-
-    article_info = []
-    for id, title in cur:
-        article_info.append({'id': id, 'title': title})
-    return article_info
-
 def get_all_user_list(cur, page, user_id):
     """
     Get all lists user_id has stored in database .
@@ -149,3 +72,36 @@ def get_all_user_list(cur, page, user_id):
     for list_title in cur:
          user_list.append({'lists_tile': list_title })
     return  user_list
+
+
+def search_books_title(cur, query):
+    cur.execute('''
+        SELECT title_id, title
+        FROM titles
+        WHERE title @@ plainto_tsquery(%s)
+        ORDER BY title DESC, title
+    ''', (query, ))
+
+    article_info = []
+    for title_id, title in cur:
+        article_info.append({'id': title_id, 'title': title})
+
+    return article_info
+
+
+def search_books_author(cur, query):
+    cur.execute('''
+        SELECT titles.title_id, titles.title
+        FROM titles
+        JOIN editions ON (editions.title_id = titles.title_id)
+        JOIN editions_authors ON (editions_authors.edition_id = editions.edition_id)
+        JOIN authors ON (authors.author_id = editions_authors.author_id)
+        WHERE author_name @@ plainto_tsquery(%s)
+        ORDER BY titles.title DESC, titles.title
+    ''', (query, ))
+
+    article_info = []
+    for title_id, title in cur:
+        article_info.append({'id': title_id, 'title': title})
+
+    return article_info

@@ -64,9 +64,16 @@ def logout():
         flash('You were logged out')
         return redirect('/login')
 
-@app.route('/main')
+@app.route('/main', methods=['GET', 'POST'])
 def home():
-    return render_template('user_main_page.html')
+    if request.method == 'GET':
+        return render_template('user_main_page.html')
+
+    if request.method == 'POST':
+        return redirect('/search')
+
+
+
 
 
 @app.route('/lists')
@@ -120,14 +127,25 @@ def delete_list(list_id):
 def get_search_results():
     if 'q' in request.args:
         query = request.args['q']
+    if 'dropdown' in request.args:
+        type = request.args['dropdown']
     else:
         abort(400)
 
+
     with easypg.cursor() as cur:
-        results = queries.search(cur, query)
+        if type == "Book":
+            results = queries.search_books_title(cur, query)
+        if type == "Author":
+            results = queries.search_books_author(cur, query)
+        if type == "Categories":
+            results = queries.search_books_category(cur, query)
+        if type == "User":
+            results = queries.search_books_user(cur, query)
+
     return render_template('search_results.html',
                            query=query,
-                           articles=results)
+                           books=results)
 
 
 if __name__ == '__main__':

@@ -5,6 +5,8 @@
 body {
     font-family: "Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
     color: #000000;
+    background-image: url("honey_im_subtle.png");
+    background-repeat: repeat;
     font-style: normal;
     font-size: 14px;
     line-height: 22px;
@@ -18,7 +20,7 @@ a {
 
 .title {
     padding: 0 20px;
-    background: #32373a;
+    background: transparent;
     position: relative;
     height: 50px;
 }

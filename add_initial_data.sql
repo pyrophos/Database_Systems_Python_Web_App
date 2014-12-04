@@ -236,4 +236,3 @@ INSERT INTO editions_authors (edition_id, author_id, creation_date, created_by, 
 VALUES (1, 4, current_timestamp, 1, current_timestamp, 1, null);
 
 COMMIT;
-

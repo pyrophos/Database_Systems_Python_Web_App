@@ -9,12 +9,16 @@
 <body>
 <h1>Search Results</h1>
 
-<form action="/search">
-    <input type="text" width="50" placeholder="Search" name="q"
-           value="{{ query }}">
-    <input type="submit" value="Go">
-</form>
-
+   <form id="search_bar" action="/search">
+       <select name="dropdown">
+            <option selected value="Book">Book</option>
+            <option value="Author">Author</option>
+            <option value="Categories">Categories</option>
+            <option value="User">User</option>
+       </select>
+       <input type="text" width="70" placeholder="Search" name="q" size="40" value="{{ query }}">
+       <input type="submit" value="Go" >
+    </form>
 <ul>
     {% for book in books %}
         <li><a href="/books/{{ book.id }}">{{ book.title }}</a></li>
