@@ -311,8 +311,12 @@ def unlk_review(uid, review_id):
         reviews.unlike_review(cur, review_id, session['user_id'])
     return redirect('/reviews/' + uid + '/' + review_id)
 
-@app.route('/authors/<id>', methods=['POST', 'GET'])
-def
+@app.route('/author/<id>', methods=['POST', 'GET'])
+def authors_search_results(id):
+    with easypg.cursor() as cur:
+        details = queries.get_author_books(cur, id)
+
+    return render_template('author_details.html', details=details)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

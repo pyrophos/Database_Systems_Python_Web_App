@@ -132,3 +132,40 @@ def search_users(cur, query):
         result.append({'id': user_id, 'username': username})
 
     return result
+
+def get_user_id(cur, u_name):
+    cur.execute('''
+                SELECT user_id
+                FROM   users
+                WHERE  username = %s
+                ''', (u_name,)
+                )
+    f = cur.fetchone()
+    uid = int(f[0])
+    return uid
+
+def get_author_books(cur, query):
+    cur.execute('''
+        SELECT authors.author_id, authors.author_name, COALESCE(ISBN, 'Not Available') AS ISBN,
+        COALESCE(edition_name, 'Not Available') AS edition_name, COALESCE(page_count, 0) AS page_count,
+        COALESCE(title, 'Not Available') AS title, COALESCE(pub_name, 'Not Available') AS pub_name, pub_date
+        FROM authors
+        JOIN editions_authors ON (editions_authors.author_id = authors.author_id)
+        JOIN editions ON (editions.edition_id = editions_authors.edition_id)
+        JOIN titles ON (titles.title_id = editions.title_id)
+        JOIN editions_publishers ON (editions_publishers.edition_id = editions.edition_id)
+        JOIN publishers ON (publishers.publisher_id = editions_publishers.publisher_id)
+        WHERE authors.author_id = %s;
+    ''', (query, ))
+
+    result = []
+    for author_id, author_name, ISBN, edition_name, page_count, title, pub_name, pub_date in cur:
+        result.append({'author_id': author_id,
+                       'author_name': author_name,
+                       'ISBN': ISBN,
+                       'edition_name': edition_name,
+                       'page_count': page_count,
+                       'title': title,
+                       'pub_name': pub_name,
+                       'pub_date': pub_date})
+    return result

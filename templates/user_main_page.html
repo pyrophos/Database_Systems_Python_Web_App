@@ -4,12 +4,15 @@
 <head lang="en">
     <link href="/static/style.css" rel="stylesheet" media="screen">
     <meta charset="UTF-8">
-    <title>Welcome, {{ session['username'] }}</title>
+</title>
 </head>
 <body>
-<div>
-    <h1>Welcome back, {{ session['username'] }} !</h1>
-</div>
+<div id="menu">
+      {% if uid == session['username'] %}
+        <h1>Welcome back, {{ session['username'] }}!</h1>
+      {% else %}
+        <h1>{{uid}}'s Homepage</h1>
+      {% endif %}
    <form id="search_bar" action="/search">
        <select name="dropdown">
             <option selected value="Book">Book</option>
@@ -17,39 +20,33 @@
             <option value="Categories">Categories</option>
             <option value="User">User</option>
        </select>
-       <input type="text" width="70" placeholder="Search" name="q" size="40">
-       <input type="submit" value="Go" >
-    </form>
-
-        <div id="menu">
-         <ul>
-              <li aria-setsize="10"><a href="/">Home</a></li>
-              <li><a href="aboutus.html">Friends</a></li>
-              <li><a href="/lists">My Lists</a></li>
-        </ul>
-       </div>
-
-  <div id="main_content_container">
-    <div id="left_pane" >
-        <h3>Top Reads</h3>
+          <input type="text" width="70" placeholder="Search" name="q" size="40">
+          <input type="submit" value="Go" >
+   </form>
+      {% if uid == session['username'] %}
         <ul>
-           <!-- {% for article in articles %}
-                 <li><a href="/articles/{{ article.id }}">{{ article.title }}</a></li>
-            {% endfor %} -->
-             <li><a href="">Fill with books that are top rated for month</a></li>
-         </ul>
-    </div>
-
-      <div id="right_pane">
-        <h4>Friend Activity</h4>
-          <ul>
-   <!-- {% for article in articles %}
-        <li><a href="/articles/{{ article.id }}">{{ article.title }}</a></li>
-    {% endfor %} -->
-        <li><a href="">Fill with user friend activity</a></li>
-</ul>
-    </div>
-
-  </div>
+            <li aria-setsize="10"><a href="/">Home</a></li>
+            <li><a href="/followers/{{ session['username']}}">Followers</a></li>
+            <li><a href="/follows/{{session['username']}}">Following</a></li>
+            <li><a href="/users/{{session['username']}}/reviews">Reviews</a></li>
+            <li><a href="/users/{{uid}}/friend_activity">Friend Activity</a></li>
+            <li><a href="/lists">My Lists</a></li>
+        </ul>
+      {% else %}
+            {% if following == 0 %}
+                <form id="follow" action="/users/{{ uid }}/follow" method="POST">
+                    <input type="submit" value="Follow"><input type="hidden" name = "follow=" value="{{ uid }}"></li>
+                </form>
+            {% else %}
+                <form id="unfollow" action="/users/{{uid}}/unfollow" method="POST">
+                    <input type="submit" value="Unfollow"><input type="hidden" name = "unfollow=" value="{{ uid }}"></li>
+                </form>
+            {% endif %}
+            <li><a href="/followers/{{uid}}">Followers</a></li>
+            <li><a href="/follows/{{uid}}">Following</a></li>
+            <li><a href="/users/{{uid}}/reviews">Reviews</a></li>
+            <li><a href="/users/{{uid}}/friend_activity">{{uid}}'s Friend Activity</a></li>
+      {% endif %}
+</div>
 </body>
 </html>

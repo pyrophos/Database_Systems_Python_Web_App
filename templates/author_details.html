@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <link href="/static/style.css" rel="stylesheet" media="screen">
+    <meta charset="UTF-8">
+    <title>Welcome, {{ session['username'] }}</title>
+</head>
+<body>
+<h1>Author Details</h1>
+
+   <form id="search_bar" action="/search">
+       <select name="dropdown">
+            <option selected value="Book">Book</option>
+            <option value="Author">Author</option>
+            <option value="Categories">Categories</option>
+            <option value="User">User</option>
+       </select>
+       <input type="text" width="70" placeholder="Search" name="q" size="40" value="{{ query }}">
+       <input type="submit" value="Go" >
+    </form>
+<ul>
+    {% for d in details %}
+        <li><a href="/author/{{d.id}}/">{{ d.title }}</a></li>
+    {% endfor %}
+</ul>
+</body>
+</html>
