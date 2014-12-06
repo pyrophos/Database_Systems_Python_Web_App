@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<style>
+    #rating_header{
+        display: inline;
+    }
+</style>
+<head>
+    <link href="/static/style.css" rel="stylesheet" media="screen">
+    <meta charset="UTF-8">
+    <title>Book Info</title>
+</head>
+<body>
+<h1>{{ title }}</h1>
+<div>
+  ISBN: {{ isbn }}.
+  Page count: {{ pages }}
+
+{#  Publication date: <em>{{ pub_date }}</em>#}
+</div>
+
+<h2>Authors</h2>
+<ul>
+{{ authors }}
+</ul>
+
+<h2>Subjects</h2>
+<ul>
+{% for cat_description in categories %}
+        {{ cat_description }}
+    {% endfor %}
+</ul>
+
+<h2>Edition</h2>
+{#if edition_name is null, default to revision (default_ed)#}
+
+    {{ edition }}
+
+
+<h2>Publisher</h2>
+{{ publisher }}
+
+<h2>Description</h2>
+{{ description }}
+
+<form action="/books/{{edition_id}}" method="POST">
+
+    <div id = "rating_header">
+        <p> Rating </p>
+    </div>
+
+    <form id="rating_bar" action="/search">
+        <select name="rating">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <h2>Review</h2>
+    </form>
+
+
+    <form action="/books/{{edition_id}}" method="POST">
+    <textarea name="review" placeholder="Comment" cols="40" rows="10">
+    </textarea><br>
+    <input type="submit" value="Submit Review">
+     </form>
+ </form>
+ 
+ <div>
+    <div id= "add_list" >
+        <form action="/add_book/{{bid}}">
+             <input type="submit" id = "add_list1" value="Add Book to list" align="left">
+        </form>
+    </div>
+</div>
+
+
+
+
+</body>
+</html>
