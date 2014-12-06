@@ -50,3 +50,22 @@ def delete_list(cur, list_id):
       SET end_date = current_date
       WHERE list_id = %s;
     ''', (list_id,list_id,list_id))
+    
+    
+
+def add_review(cur, uid, eid, text, spoilers):
+
+    cur.execute('''
+     INSERT INTO reviews(user_id, edition_id, review_text, spoilers, creation_date,
+      last_update_date, last_update_by, end_date)
+      VALUES(%s, %s, %s, %s, current_timestamp, current_timestamp ,
+      1, null)
+    ''', (uid, eid, text, spoilers))
+
+def add_rating(cur,uid, eid, rating):
+
+    cur.execute('''
+    INSERT INTO rating(rater_id, edition_id, rating, creation_date, last_update_date,
+      last_update_by, end_date)
+      VALUES(%s,%s, %s, current_timestamp , current_timestamp , 1, null)
+    ''', (uid, eid, rating))

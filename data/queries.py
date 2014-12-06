@@ -76,15 +76,16 @@ def get_all_user_list(cur, page, user_id):
 
 def search_titles(cur, query):
     cur.execute('''
-        SELECT title_id, title
+        SELECT title_id, title, edition_id
         FROM titles
+        JOIN editions USING (title_id)
         WHERE title @@ plainto_tsquery(%s)
         ORDER BY title DESC, title
     ''', (query, ))
 
     result = []
-    for title_id, title in cur:
-        result.append({'id': title_id, 'title': title})
+    for title_id, title, edition_id in cur:
+        result.append({'id': title_id, 'title': title, 'edition_id': edition_id})
 
     return result
 

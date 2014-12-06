@@ -22,7 +22,7 @@
 <ul>
     {% if books != None %}
         {% for book in books %}
-            <li><a href="/books/{{ book.id }}">{{ book.title }}</a></li>
+            <li><a href="/books/{{ book.edition_id }}">{{ book.title }}</a></li>
         {% endfor %}
     {% endif %}
 

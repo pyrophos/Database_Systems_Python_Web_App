@@ -3,7 +3,7 @@ from os import abort
 __author__ = 'RR1'
 
 from flask import Flask, render_template, redirect, url_for, request, session, flash, escape
-from data import queries, follows, reviews
+from data import queries, follows, reviews, books
 from flask import render_template
 from data import user_lists, activity
 import os
@@ -331,6 +331,30 @@ def get_frnd_actvty(uid):
     return render_template('activity_list.html',
                            activity_info = activity_info,
                            uid = uid)
+
+@app.route('/books/<tid>', methods=['GET', 'POST'])
+def get_title(tid):
+
+    if request.method == 'GET':
+        with easypg.cursor() as cur:
+            title_info = books.get_title(cur, tid)
+        if title_info is None:
+            abort(404)
+
+        return render_template('book.html',
+                                 edition_id=tid,
+                                 **title_info)
+
+    if request.method == 'POST':
+        with easypg.cursor() as cur:
+            print "Working!!!"
+            #rating = request.form['rating']
+            review = request.form['review']
+            #user_lists.add_rating(cur, session['user_id'],tid, rating)
+            user_lists.add_review(cur,session['user_id'], tid, review, 0)
+            print "done!"
+        return redirect('/books/'+ tid)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
